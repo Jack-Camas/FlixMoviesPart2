@@ -64,8 +64,22 @@ class ViewController: UIViewController, UITableViewDataSource {
 
         // Assign table view data source
         tableView.dataSource = self
+        navigationController?.navigationBar.prefersLargeTitles = true
 
         fetchMovies()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let selectIndexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selectIndexPath, animated: true)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let selectIndexPath = tableView.indexPathForSelectedRow else { return }
+        let selectedMovie = movies[selectIndexPath.row]
+        guard let detailViewController = segue.destination as? DetailViewController else { return }
+        detailViewController.movie = selectedMovie
     }
 
     // Fetches a list of popular movies from the TMDB API
